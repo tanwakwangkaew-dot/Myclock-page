@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cyber Clock</title>
+  <!-- ฟอนต์บางยาวแบบ UI anime -->
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: radial-gradient(circle at top, #0f172a 0%, #020617 50%, #000 100%);
@@ -46,7 +48,10 @@
       --accent2: #6b7280;
     }
 
-    * { box-sizing: border-box; font-family: "Courier New", monospace; }
+    * {
+      box-sizing: border-box;
+      font-family: "Rajdhani", system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
     body {
       margin: 0;
       min-height: 100vh;
@@ -96,28 +101,37 @@
     }
 
     .clock { margin-top: 16px; text-align: center; }
+
+    /* ตรงนี้คือจุดหลักที่ทำให้ดูเป็น UI anime บางยาว */
     .time {
-      font-size: 3rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-shadow: 0 0 16px rgba(56, 189, 248, 0.5);
+      font-family: "Rajdhani", sans-serif;
+      font-size: 3.1rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;   /* เว้นเยอะให้ดูเทค */
+      text-transform: uppercase;
       color: var(--accent);
       line-height: 1;
-      transition: color 0.3s ease, text-shadow 0.3s ease;
+      text-shadow: 0 0 16px rgba(56, 189, 248, 0.5);
     }
-    html[data-theme="sketch"] .time { text-shadow: none; }
     .seconds {
-      font-size: 1rem;
+      font-family: "Rajdhani", sans-serif;
+      font-size: 1.05rem;
+      letter-spacing: 0.15em;
       color: var(--accent2);
-      margin-left: 6px;
+      margin-left: 8px;
       text-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
-      transition: color 0.3s ease, text-shadow 0.3s ease;
+      vertical-align: top;
     }
-    html[data-theme="sketch"] .seconds { text-shadow: none; }
+    html[data-theme="sketch"] .time,
+    html[data-theme="sketch"] .seconds {
+      text-shadow: none;
+      letter-spacing: 0.12em;
+    }
+
     .date {
       margin-top: 6px;
       font-size: 0.7rem;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.25em;
       opacity: 0.7;
       text-transform: uppercase;
     }
@@ -130,6 +144,7 @@
       background: repeating-linear-gradient(90deg, #111827 0 4px, transparent 4px 8px);
       opacity: 0.5;
     }
+
     .metrics { display: flex; gap: 10px; }
     .metric-box {
       flex: 1;
@@ -150,7 +165,11 @@
       opacity: 0.55;
       margin-bottom: 5px;
     }
-    .metric-value { font-size: 1rem; color: var(--text); }
+    .metric-value {
+      font-size: 1rem;
+      color: var(--text);
+      letter-spacing: 0.05em;
+    }
     .line {
       width: 100%;
       height: 3px;
@@ -170,6 +189,7 @@
       animation: none;
       height: 2px;
     }
+
     @keyframes glow {
       0% { filter: drop-shadow(0 0 3px rgba(56, 189, 248, 0.8)); }
       100% { filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.9)); }
@@ -187,7 +207,7 @@
       opacity: 0.4;
       pointer-events: none;
     }
-    html[data-theme="sketch"] .scanline { display: none; }
+    html[data-theme="sketch"] .scanline { display: false; }
     @keyframes slide {
       0% { top: -40px; }
       100% { top: 110%; }
@@ -254,16 +274,12 @@
     updateClock();
     setInterval(updateClock, 1000);
 
-    // ----- ส่วนแบต -----
+    // battery จริงถ้ามี
     const batteryEl = document.getElementById("battery");
-
-    // ฟังก์ชันเซ็ตค่าแบต
     function setBatteryPercent(pct, charging = false) {
       pct = Math.round(pct);
       batteryEl.textContent = charging ? pct + "% ⚡" : pct + "%";
     }
-
-    // ถ้ามี Battery API ให้ใช้ของจริง
     if (navigator.getBattery) {
       navigator.getBattery().then(function(battery) {
         function updateAll() {
@@ -273,24 +289,20 @@
         battery.addEventListener("levelchange", updateAll);
         battery.addEventListener("chargingchange", updateAll);
       }).catch(function() {
-        // ถ้า error ให้ใช้ค่าเดมอ
         setBatteryPercent(82, false);
       });
     } else {
-      // ไม่รองรับ Battery API -> เดมอ
       setBatteryPercent(82, false);
     }
 
-    // ----- เปลี่ยนธีม -----
+    // เปลี่ยนธีม
     const themes = ["cyber", "neon", "sunset", "sketch"];
     let current = 0;
     const box = document.getElementById("clockBox");
-
     function switchTheme() {
       current = (current + 1) % themes.length;
       document.documentElement.setAttribute("data-theme", themes[current]);
     }
-
     box.addEventListener("click", switchTheme);
     box.addEventListener("touchend", function(e){
       e.preventDefault();
