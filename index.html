@@ -1,57 +1,64 @@
 <!DOCTYPE html>
-<html lang="th" data-theme="cyber">
+<html lang="th" data-theme="sketch">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cyber Clock</title>
-  <!-- ฟอนต์บางยาวแบบ UI anime -->
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: radial-gradient(circle at top, #0f172a 0%, #020617 50%, #000 100%);
-      --panel: rgba(2, 6, 23, 0.35);
-      --border: rgba(148, 163, 184, 0.25);
-      --text: #e2e8f0;
-      --accent: #38bdf8;
-      --accent2: #a855f7;
-    }
-    html[data-theme="cyber"] {
-      --bg: radial-gradient(circle at top, #0f172a 0%, #020617 50%, #000 100%);
-      --panel: rgba(2, 6, 23, 0.35);
-      --border: rgba(148, 163, 184, 0.25);
-      --text: #e2e8f0;
-      --accent: #38bdf8;
-      --accent2: #a855f7;
-    }
-    html[data-theme="neon"] {
-      --bg: radial-gradient(circle at top, #022c22 0%, #01140d 50%, #000 100%);
-      --panel: rgba(1, 20, 13, 0.5);
-      --border: rgba(74, 222, 128, 0.35);
-      --text: #ecfdf3;
-      --accent: #4ade80;
-      --accent2: #f97316;
-    }
-    html[data-theme="sunset"] {
-      --bg: radial-gradient(circle at top, #500724 0%, #2e1065 50%, #0f172a 100%);
-      --panel: rgba(79, 70, 229, 0.18);
-      --border: rgba(244, 114, 182, 0.3);
-      --text: #ffe4e6;
-      --accent: #f472b6;
-      --accent2: #93c5fd;
-    }
-    html[data-theme="sketch"] {
       --bg: #e5e7eb;
       --panel: #f8fafc;
       --border: #111827;
       --text: #111827;
       --accent: #111827;
-      --accent2: #6b7280;
+      --accent2: #111827;
+      --weekday-color: #111827;
+      --battery-color: #111827;
+      --metric-bg: #ffffff;
+      --metric-border: #111827;
+      --line-color: #111827;
+      /* ปุ่มควบคุม (Theme / …) ค่าเริ่มต้น */
+      --control-bg: radial-gradient(circle at top, rgba(245,247,250,0.9), rgba(225,230,235,0.85));
+      --control-border: rgba(15,23,42,0.15);
+      --control-fg: rgba(15,23,42,0.6);
     }
 
-    * {
-      box-sizing: border-box;
-      font-family: "Rajdhani", system-ui, -apple-system, "Segoe UI", sans-serif;
+    /* ธีมอื่น */
+    html[data-theme="cyber"] {
+      --bg: radial-gradient(circle at top, #0f172a 0%, #020617 50%, #000 100%);
+      --control-bg: radial-gradient(circle at top, rgba(15,23,42,0.7), rgba(15,23,42,0.4));
+      --control-border: rgba(148,163,184,0.45);
+      --control-fg: #e2e8f0;
     }
+    html[data-theme="neon"]  {
+      --bg: radial-gradient(circle at top, #022c22 0%, #01140d 50%, #000 100%);
+      --control-bg: radial-gradient(circle at top, rgba(3,42,32,0.75), rgba(3,42,32,0.4));
+      --control-border: rgba(74,222,128,0.45);
+      --control-fg: #ecfdf3;
+    }
+    html[data-theme="sunset"]{
+      --bg: radial-gradient(circle at top, #500724 0%, #2e1065 50%, #0f172a 100%);
+      --control-bg: radial-gradient(circle at top, rgba(79,70,229,0.45), rgba(244,114,182,0.35));
+      --control-border: rgba(244,114,182,0.5);
+      --control-fg: #ffe4e6;
+    }
+    html[data-theme="sketch"]{
+      --bg: #e5e7eb;
+      --control-bg: radial-gradient(circle at top, rgba(245,247,250,0.9), rgba(225,230,235,0.85));
+      --control-border: rgba(15,23,42,0.15);
+      --control-fg: rgba(15,23,42,0.6);
+    }
+
+    * { box-sizing: border-box; font-family: "Rajdhani", system-ui, sans-serif; }
+
+    /* ปิดเลือกข้อความ + ปิด touch callout */
+    body, .wrap {
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      user-select: none;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
@@ -60,22 +67,18 @@
       align-items: center;
       background: var(--bg);
       color: var(--text);
-      transition: background 0.4s ease;
     }
     .wrap {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 18px;
-      backdrop-filter: blur(10px);
-      padding: 20px 22px 16px;
+      padding: 20px 22px 75px;
       width: 320px;
       position: relative;
-      box-shadow: 0 0 30px rgba(15, 23, 42, 0.25);
-      transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
-    }
-    html[data-theme="sketch"] .wrap {
       box-shadow: 4px 4px 0 #111827;
-      backdrop-filter: none;
+      transition: background .3s ease, color .3s ease;
+      color: var(--text);
+      overflow: visible;
     }
 
     .top-bar {
@@ -83,150 +86,290 @@
       justify-content: space-between;
       font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 0.14em;
-      opacity: 0.7;
+      letter-spacing: .14em;
+      opacity: .7;
+      color: var(--text);
     }
     .status-dot {
       width: 8px;
       height: 8px;
       border-radius: 999px;
       background: #22c55e;
-      box-shadow: 0 0 8px #22c55e;
-      display: inline-block;
       margin-right: 4px;
-    }
-    html[data-theme="sketch"] .status-dot {
-      box-shadow: none;
-      border: 1px solid #111827;
+      border: 1px solid rgba(0,0,0,.2);
+      display: inline-block;
     }
 
     .clock { margin-top: 16px; text-align: center; }
-
-    /* ตรงนี้คือจุดหลักที่ทำให้ดูเป็น UI anime บางยาว */
     .time {
-      font-family: "Rajdhani", sans-serif;
       font-size: 3.1rem;
       font-weight: 500;
-      letter-spacing: 0.18em;   /* เว้นเยอะให้ดูเทค */
+      letter-spacing: .18em;
       text-transform: uppercase;
       color: var(--accent);
       line-height: 1;
-      text-shadow: 0 0 16px rgba(56, 189, 248, 0.5);
+      display: inline-block;
     }
     .seconds {
-      font-family: "Rajdhani", sans-serif;
       font-size: 1.05rem;
-      letter-spacing: 0.15em;
+      letter-spacing: .12em;
       color: var(--accent2);
       margin-left: 8px;
-      text-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
       vertical-align: top;
+      display: inline-block;
     }
-    html[data-theme="sketch"] .time,
-    html[data-theme="sketch"] .seconds {
-      text-shadow: none;
-      letter-spacing: 0.12em;
+    /* animation ตอนเลขเปลี่ยน */
+    @keyframes tickPulse {
+      0% { transform: translateY(-4px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
     }
+    .tick { animation: tickPulse .35s ease-out; }
 
     .date {
       margin-top: 6px;
-      font-size: 0.7rem;
-      letter-spacing: 0.25em;
-      opacity: 0.7;
+      font-size: .7rem;
+      letter-spacing: .25em;
+      opacity: .7;
       text-transform: uppercase;
+      color: var(--text);
     }
+
     .divider {
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.3), transparent);
+      background: repeating-linear-gradient(90deg, var(--line-color) 0 4px, transparent 4px 8px);
       margin: 14px 0 10px;
-    }
-    html[data-theme="sketch"] .divider {
-      background: repeating-linear-gradient(90deg, #111827 0 4px, transparent 4px 8px);
-      opacity: 0.5;
+      opacity: .5;
     }
 
     .metrics { display: flex; gap: 10px; }
     .metric-box {
       flex: 1;
-      background: radial-gradient(circle, rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0));
-      border: 1px solid rgba(148, 163, 184, 0.15);
+      background: var(--metric-bg);
+      border: 1px solid var(--metric-border);
       border-radius: 10px;
       padding: 6px 8px 8px;
-      transition: border 0.3s ease, background 0.3s ease;
-    }
-    html[data-theme="sketch"] .metric-box {
-      background: #fff;
-      border: 1px solid #111827;
     }
     .metric-title {
-      font-size: 0.55rem;
+      font-size: .55rem;
       text-transform: uppercase;
-      letter-spacing: 0.14em;
-      opacity: 0.55;
-      margin-bottom: 5px;
-    }
-    .metric-value {
-      font-size: 1rem;
+      letter-spacing: .14em;
+      opacity: .55;
       color: var(--text);
-      letter-spacing: 0.05em;
     }
+    #weekday { color: var(--weekday-color); }
+    #battery { color: var(--battery-color); }
     .line {
       width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, rgba(56, 189, 248, 0.6), rgba(168, 85, 247, 0.6));
+      height: 2px;
+      background: var(--line-color);
       border-radius: 999px;
       margin-top: 6px;
-      animation: glow 3s ease-in-out infinite alternate;
-    }
-    html[data-theme="neon"] .line {
-      background: linear-gradient(90deg, rgba(74, 222, 128, 0.6), rgba(249, 115, 22, 0.6));
-    }
-    html[data-theme="sunset"] .line {
-      background: linear-gradient(90deg, rgba(244, 114, 182, 0.6), rgba(147, 197, 253, 0.6));
-    }
-    html[data-theme="sketch"] .line {
-      background: #111827;
-      animation: none;
-      height: 2px;
     }
 
-    @keyframes glow {
-      0% { filter: drop-shadow(0 0 3px rgba(56, 189, 248, 0.8)); }
-      100% { filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.9)); }
-    }
-
-    .scanline {
-      position: absolute;
-      top: -30px;
-      left: 0;
-      width: 100%;
-      height: 30px;
-      background: linear-gradient(180deg, rgba(56,189,248,0.6), transparent);
-      animation: slide 4s linear infinite;
-      filter: blur(6px);
-      opacity: 0.4;
-      pointer-events: none;
-    }
-    html[data-theme="sketch"] .scanline { display: false; }
-    @keyframes slide {
-      0% { top: -40px; }
-      100% { top: 110%; }
-    }
     .theme-hint {
       margin-top: 10px;
-      font-size: 0.6rem;
+      font-size: .6rem;
       text-align: center;
       opacity: .45;
+      color: var(--text);
+    }
+
+    /* แผงคุมสี */
+    .color-panel {
+      position: absolute;
+      right: 16px;
+      bottom: 75px;
+      width: 240px;
+      background: rgba(248, 250, 252, 0.85);
+      border: 1px solid rgba(15,23,42,.12);
+      border-radius: 14px;
+      padding: 10px 12px;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 12px 30px rgba(0,0,0,.18);
+      gap: 6px;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: opacity .25s ease, transform .25s ease;
+    }
+    .color-panel.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .color-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .color-label {
+      font-size: .65rem;
+      opacity: .75;
+      color: #111827;
+    }
+    input[type="color"] {
+      width: 26px;
+      height: 26px;
+      border: 1px solid rgba(15,23,42,.35);
+      background: transparent;
+      padding: 0;
+      border-radius: 8px;
+      -webkit-user-select: auto;
+      user-select: auto;
+      -webkit-touch-callout: default;
+    }
+    .reset-btn {
+      font-size: .6rem;
+      border: 1px solid #111827;
+      background: #fff;
+      border-radius: 6px;
+      padding: 3px 10px;
+      margin-left: auto;
+    }
+
+    /* ปุ่ม … แบบ liquid glass ใช้สีจากธีม */
+    .color-toggle {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      width: 56px;
+      height: 56px;
+      background: var(--control-bg);
+      border: 1px solid var(--control-border);
+      border-radius: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 10px 25px rgba(15,23,42,.15);
+      backdrop-filter: blur(9px);
+      overflow: hidden;
+      transition: background .2s ease, border .2s ease;
+    }
+    .color-toggle .dot {
+      width: 7px;
+      height: 7px;
+      background: rgba(15, 23, 42, 0.85);
+      background: var(--control-fg);
+      border-radius: 999px;
+    }
+    .color-toggle::before {
+      content: "";
+      position: absolute;
+      width: 120%;
+      height: 120%;
+      background: radial-gradient(circle, rgba(255,255,255,.65), rgba(255,255,255,0));
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+      pointer-events: none;
+      border-radius: 999px;
+    }
+    @keyframes liquidBurst {
+      0%   { transform: translate(-50%, -50%) scale(0);   opacity: .9; }
+      50%  { transform: translate(-50%, -50%) scale(1);   opacity: .4; }
+      100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; }
+    }
+    .color-toggle.glass-burst::before {
+      animation: liquidBurst .45s ease-out;
+    }
+
+    /* ปุ่ม Theme ใส + ใช้สีจากธีม */
+    .theme-btn {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      width: 80px;
+      height: 54px;
+      border-radius: 999px;
+      background: var(--control-bg);
+      border: 1px solid var(--control-border);
+      backdrop-filter: blur(9px);
+      box-shadow: 0 10px 25px rgba(15,23,42,.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 12px;
+      transition: background .2s ease, border .2s ease;
+    }
+    .theme-btn:active { transform: scale(.97); }
+    .theme-icon-ring {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.95);
+      border-radius: 999px;
+      position: relative;
+    }
+    .theme-icon-ring::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 6px;
+      height: 9px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 999px;
+      transform: rotate(-30deg);
+      transform-origin: bottom center;
+    }
+    .theme-text {
+      font-size: .65rem;
+      letter-spacing: .04em;
+      color: var(--control-fg);
+      text-shadow: 0 1px 2px rgba(255,255,255,.25);
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    /* popup เลือกธีม */
+    .theme-popup {
+      position: absolute;
+      left: 16px;
+      bottom: 58px;
+      background: rgba(248,250,252,0.88);
+      border: 1px solid rgba(15,23,42,.1);
+      border-radius: 12px;
+      backdrop-filter: blur(5px);
+      padding: 6px 6px;
+      display: none;
+      min-width: 120px;
+      box-shadow: 0 10px 22px rgba(0,0,0,.15);
+    }
+    .theme-popup.show {
+      display: block;
+      animation: popIn .15s ease-out;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .theme-option {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 6px;
+      border-radius: 8px;
+      font-size: .6rem;
+    }
+    .theme-option:hover { background: rgba(15,23,42,.05); }
+    .theme-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
     }
   </style>
 </head>
 <body>
   <div class="wrap" id="clockBox">
-    <div class="scanline"></div>
     <div class="top-bar">
       <div><span class="status-dot"></span>CLOCK</div>
       <div id="tz">TH/BKK</div>
     </div>
+
     <div class="clock">
       <div>
         <span id="time" class="time">00:00</span>
@@ -234,79 +377,322 @@
       </div>
       <div id="date" class="date">--</div>
     </div>
+
     <div class="divider"></div>
+
     <div class="metrics">
       <div class="metric-box">
-        <div class="metric-title">weekday</div>
+        <div class="metric-title">WEEKDAY</div>
         <div id="weekday" class="metric-value">--</div>
         <div class="line"></div>
       </div>
       <div class="metric-box">
-        <div class="metric-title">battery</div>
+        <div class="metric-title">BATTERY</div>
         <div id="battery" class="metric-value">--%</div>
         <div class="line"></div>
       </div>
     </div>
-    <p class="theme-hint">แตะที่กล่องนี้เพื่อเปลี่ยนธีม</p>
+
+    <p class="theme-hint">ปุ่ม Theme: แตะ = วน • กดค้าง = เลือกธีม</p>
+
+    <!-- แผงคุมสี -->
+    <div class="color-panel" id="colorPanel">
+      <div class="color-row">
+        <span class="color-label">เลข</span>
+        <input type="color" id="numColor" value="#111827">
+      </div>
+      <div class="color-row">
+        <span class="color-label">เส้น (วินาที)</span>
+        <input type="color" id="lineColor" value="#111827">
+      </div>
+      <div class="color-row">
+        <span class="color-label">พื้นหลังการ์ด</span>
+        <input type="color" id="bgColor" value="#f8fafc">
+      </div>
+      <div class="color-row">
+        <span class="color-label">ข้อความวัน</span>
+        <input type="color" id="weekdayColor" value="#111827">
+      </div>
+      <div class="color-row">
+        <span class="color-label">ข้อความแบต</span>
+        <input type="color" id="batteryColor" value="#111827">
+      </div>
+      <div class="color-row">
+        <button id="resetBtn" class="reset-btn">Reset</button>
+      </div>
+    </div>
+
+    <!-- ปุ่มเปิดแผงสี -->
+    <button class="color-toggle" id="colorToggle" aria-label="เปิดแผงตั้งค่าสี">
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    </button>
+
+    <!-- ปุ่มเปลี่ยนธีม -->
+    <button class="theme-btn" id="themeBtn" aria-label="เปลี่ยนธีม">
+      <span class="theme-icon-ring"></span>
+      <span class="theme-text">Theme</span>
+    </button>
+
+    <!-- popup เลือกธีม -->
+    <div class="theme-popup" id="themePopup">
+      <div class="theme-option" data-theme="sketch">
+        <span class="theme-dot" style="background:#111827"></span> Sketch
+      </div>
+      <div class="theme-option" data-theme="cyber">
+        <span class="theme-dot" style="background:#38bdf8"></span> Cyber
+      </div>
+      <div class="theme-option" data-theme="neon">
+        <span class="theme-dot" style="background:#4ade80"></span> Neon
+      </div>
+      <div class="theme-option" data-theme="sunset">
+        <span class="theme-dot" style="background:#f472b6"></span> Sunset
+      </div>
+    </div>
   </div>
 
   <script>
+    // กันเมนูค้างของมือถือ
+    document.addEventListener("contextmenu", e => e.preventDefault());
+
     const dayNames = ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."];
     const monthNames = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
 
-    function updateClock() {
-      const now = new Date();
-      let h = now.getHours().toString().padStart(2, "0");
-      let m = now.getMinutes().toString().padStart(2, "0");
-      let s = now.getSeconds().toString().padStart(2, "0");
+    const themePresets = {
+      sketch: {
+        text: "#111827", accent: "#111827", accent2: "#111827",
+        panel: "#f8fafc", border: "#111827",
+        metricBg: "#ffffff", metricBorder: "#111827",
+        weekday: "#111827", battery: "#111827",
+        line: "#111827",
+        controlBg: "radial-gradient(circle at top, rgba(245,247,250,0.9), rgba(225,230,235,0.85))",
+        controlBorder: "rgba(15,23,42,0.15)",
+        controlFg: "rgba(15,23,42,0.6)"
+      },
+      cyber: {
+        text: "#e2e8f0", accent: "#38bdf8", accent2: "#a855f7",
+        panel: "rgba(2,6,23,0.35)", border: "rgba(148,163,184,0.25)",
+        metricBg: "rgba(15,23,42,0.35)", metricBorder: "rgba(148,163,184,0.35)",
+        weekday: "#e2e8f0", battery: "#e2e8f0",
+        line: "rgba(226,232,240,0.5)",
+        controlBg: "radial-gradient(circle at top, rgba(15,23,42,0.7), rgba(15,23,42,0.4))",
+        controlBorder: "rgba(148,163,184,0.45)",
+        controlFg: "#e2e8f0"
+      },
+      neon: {
+        text: "#ecfdf3", accent: "#4ade80", accent2: "#f97316",
+        panel: "rgba(1,20,13,0.5)", border: "rgba(74, 222, 128, 0.35)",
+        metricBg: "rgba(3, 42, 32, 0.5)", metricBorder: "rgba(236, 253, 243, 0.35)",
+        weekday: "#ecfdf3", battery: "#ecfdf3",
+        line: "rgba(236, 253, 243, 0.6)",
+        controlBg: "radial-gradient(circle at top, rgba(3,42,32,0.75), rgba(3,42,32,0.4))",
+        controlBorder: "rgba(74,222,128,0.45)",
+        controlFg: "#ecfdf3"
+      },
+      sunset: {
+        text: "#ffe4e6", accent: "#f472b6", accent2: "#93c5fd",
+        panel: "rgba(79, 70, 229, 0.18)", border: "rgba(244, 114, 182, 0.3)",
+        metricBg: "rgba(79, 70, 229, 0.25)", metricBorder: "rgba(244, 114, 182, 0.5)",
+        weekday: "#ffe4e6", battery: "#ffe4e6",
+        line: "rgba(255, 228, 230, 0.7)",
+        controlBg: "radial-gradient(circle at top, rgba(79,70,229,0.45), rgba(244,114,182,0.35))",
+        controlBorder: "rgba(244,114,182,0.5)",
+        controlFg: "#ffe4e6"
+      }
+    };
 
-      document.getElementById("time").textContent = `${h}:${m}`;
-      document.getElementById("sec").textContent = s;
-
-      const d = now.getDate();
-      const mo = monthNames[now.getMonth()];
-      const y = now.getFullYear();
-      document.getElementById("date").textContent = `${d} ${mo} ${y}`;
-
-      document.getElementById("weekday").textContent = dayNames[now.getDay()];
+    function restartAnimation(el) {
+      el.classList.remove("tick");
+      void el.offsetWidth;
+      el.classList.add("tick");
     }
 
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, "0");
+      const m = String(now.getMinutes()).padStart(2, "0");
+      const s = String(now.getSeconds()).padStart(2, "0");
+      const timeEl = document.getElementById("time");
+      const secEl = document.getElementById("sec");
+
+      secEl.textContent = s;
+      restartAnimation(secEl);
+
+      const newMinute = `${h}:${m}`;
+      if (timeEl.textContent !== newMinute) {
+        timeEl.textContent = newMinute;
+        restartAnimation(timeEl);
+      }
+
+      document.getElementById("date").textContent =
+        `${now.getDate()} ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+      document.getElementById("weekday").textContent = dayNames[now.getDay()];
+    }
     updateClock();
     setInterval(updateClock, 1000);
 
-    // battery จริงถ้ามี
+    // battery
     const batteryEl = document.getElementById("battery");
     function setBatteryPercent(pct, charging = false) {
       pct = Math.round(pct);
       batteryEl.textContent = charging ? pct + "% ⚡" : pct + "%";
     }
     if (navigator.getBattery) {
-      navigator.getBattery().then(function(battery) {
+      navigator.getBattery().then(battery => {
         function updateAll() {
           setBatteryPercent(battery.level * 100, battery.charging);
         }
         updateAll();
         battery.addEventListener("levelchange", updateAll);
         battery.addEventListener("chargingchange", updateAll);
-      }).catch(function() {
-        setBatteryPercent(82, false);
-      });
+      }).catch(() => setBatteryPercent(66, false));
     } else {
-      setBatteryPercent(82, false);
+      setBatteryPercent(66, false);
     }
 
-    // เปลี่ยนธีม
+    // elements
+    const numColor     = document.getElementById("numColor");
+    const lineColor    = document.getElementById("lineColor");
+    const bgColor      = document.getElementById("bgColor");
+    const weekdayColor = document.getElementById("weekdayColor");
+    const batteryColor = document.getElementById("batteryColor");
+    const resetBtn     = document.getElementById("resetBtn");
+    const panel        = document.getElementById("colorPanel");
+    const toggleBtn    = document.getElementById("colorToggle");
+    const themeBtn     = document.getElementById("themeBtn");
+    const themePopup   = document.getElementById("themePopup");
+
     const themes = ["cyber", "neon", "sunset", "sketch"];
-    let current = 0;
-    const box = document.getElementById("clockBox");
+    let current = themes.indexOf("sketch");
+
+    function applyThemeColors(themeName) {
+      const p = themePresets[themeName];
+      if (!p) return;
+      document.documentElement.style.setProperty("--text", p.text);
+      document.documentElement.style.setProperty("--accent", p.accent);
+      document.documentElement.style.setProperty("--accent2", p.accent2);
+      document.documentElement.style.setProperty("--panel", p.panel);
+      document.documentElement.style.setProperty("--border", p.border);
+      document.documentElement.style.setProperty("--metric-bg", p.metricBg);
+      document.documentElement.style.setProperty("--metric-border", p.metricBorder);
+      document.documentElement.style.setProperty("--weekday-color", p.weekday);
+      document.documentElement.style.setProperty("--battery-color", p.battery);
+      document.documentElement.style.setProperty("--line-color", p.line);
+      // ปุ่ม
+      document.documentElement.style.setProperty("--control-bg", p.controlBg);
+      document.documentElement.style.setProperty("--control-border", p.controlBorder);
+      document.documentElement.style.setProperty("--control-fg", p.controlFg);
+
+      // sync ช่องสี
+      numColor.value     = p.accent;
+      lineColor.value    = p.accent2;
+      bgColor.value      = p.panel;
+      weekdayColor.value = p.weekday;
+      batteryColor.value = p.battery;
+    }
+    applyThemeColors("sketch");
+
     function switchTheme() {
       current = (current + 1) % themes.length;
-      document.documentElement.setAttribute("data-theme", themes[current]);
+      const next = themes[current];
+      document.documentElement.setAttribute("data-theme", next);
+      applyThemeColors(next);
     }
-    box.addEventListener("click", switchTheme);
-    box.addEventListener("touchend", function(e){
-      e.preventDefault();
-      switchTheme();
+
+    // ปุ่ม Theme: แตะ = วน, ค้าง = popup
+    let pressTimer = null;
+    let longPressFired = false;
+    const longPressTime = 500;
+
+    function openThemePopup() {
+      themePopup.classList.add("show");
+    }
+    function closeThemePopup() {
+      themePopup.classList.remove("show");
+    }
+
+    function startPress(e) {
+      e.stopPropagation();
+      longPressFired = false;
+      pressTimer = setTimeout(() => {
+        longPressFired = true;
+        openThemePopup();
+      }, longPressTime);
+    }
+    function endPress(e) {
+      e.stopPropagation();
+      clearTimeout(pressTimer);
+      if (!longPressFired) {
+        switchTheme();
+      }
+    }
+
+    themeBtn.addEventListener("mousedown", startPress);
+    themeBtn.addEventListener("touchstart", startPress);
+    themeBtn.addEventListener("mouseup", endPress);
+    themeBtn.addEventListener("mouseleave", () => clearTimeout(pressTimer));
+    themeBtn.addEventListener("touchend", endPress);
+
+    // กดเลือกธีมใน popup
+    document.querySelectorAll(".theme-option").forEach(opt => {
+      opt.addEventListener("click", e => {
+        e.stopPropagation();
+        const t = opt.dataset.theme;
+        document.documentElement.setAttribute("data-theme", t);
+        applyThemeColors(t);
+        current = themes.indexOf(t);
+        closeThemePopup();
+      });
+    });
+
+    // ปุ่ม ... เปิดแผงสี
+    toggleBtn.addEventListener("click", e => {
+      e.stopPropagation();
+      panel.classList.toggle("show");
+      toggleBtn.classList.remove("glass-burst");
+      void toggleBtn.offsetWidth;
+      toggleBtn.classList.add("glass-burst");
+    });
+
+    // ช่องสีไม่ให้ส่งคลิกขึ้นไป
+    [numColor, lineColor, bgColor, weekdayColor, batteryColor].forEach(el => {
+      ["click","touchstart","touchend"].forEach(evt => {
+        el.addEventListener(evt, ev => ev.stopPropagation());
+      });
+    });
+    ["click","touchend"].forEach(evt => {
+      resetBtn.addEventListener(evt, ev => ev.stopPropagation());
+    });
+
+    // เปลี่ยนสีสดๆ
+    numColor.addEventListener("input", function () {
+      document.documentElement.style.setProperty("--accent", this.value);
+    });
+    lineColor.addEventListener("input", function () {
+      document.documentElement.style.setProperty("--accent2", this.value);
+    });
+    bgColor.addEventListener("input", function () {
+      document.documentElement.style.setProperty("--panel", this.value);
+    });
+    weekdayColor.addEventListener("input", function () {
+      document.documentElement.style.setProperty("--weekday-color", this.value);
+    });
+    batteryColor.addEventListener("input", function () {
+      document.documentElement.style.setProperty("--battery-color", this.value);
+    });
+
+    // reset
+    resetBtn.addEventListener("click", () => {
+      document.documentElement.setAttribute("data-theme", "sketch");
+      current = themes.indexOf("sketch");
+      applyThemeColors("sketch");
+      panel.classList.remove("show");
+    });
+
+    // กดที่อื่นปิด popup theme
+    document.addEventListener("click", e => {
+      if (!e.target.closest("#themePopup") && e.target.id !== "themeBtn") {
+        closeThemePopup();
+      }
     });
   </script>
 </body>
